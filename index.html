@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <!-- font-awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" />
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -50,21 +52,23 @@
             </div>
             <div class="input-group f-class">
                 <div>
-                    <label for="">First Class ($150)</label>
-                    <input class="inp-style inp-width" type="number" name="">
+                    <label for="">Business Class (<b>$150</b>)</label>
+                    <input id="business-count" class="inp-style inp-width" type="number" value="1" name="">
                 </div>
-                <div class="plus-minus-btn">
-                    <p>+ -</p>
+                <div class="button-count">
+                    <button id="business-minus" class="btn btn-default plus-minus-btn"><i class="fas fa-minus"></i></button>
+                     <button id="business-plus" class="btn btn-default plus-minus-btn"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
             
             <div class="input-group f-class">
                 <div>
-                    <label for="">Economy ($100)</label>
-                    <input class="inp-style inp-width" type="number" name="">
+                    <label for="">Economy Class (<b>$100</b>)</label>
+                    <input id="economy-count" class="inp-style inp-width" type="number" value="1" name="">
                 </div>
-                <div class="plus-minus-btn">
-                    <p> <span>+</span> <span>-</span> </p>
+                <div class="button-count">
+                    <button id="economy-minus" class="btn btn-default plus-minus-btn"><i class="fas fa-minus"></i></button>
+                     <button id="economy-plus" class="btn btn-default plus-minus-btn"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
             <div class="calculations">
@@ -73,7 +77,7 @@
                         <p>Subtotal</p>
                     </div>
                     <div class="right">
-                        <p>$500</p>
+                        <p>$<span id="total-price">250</span></p>
                     </div>
                 </div>
 
@@ -82,7 +86,7 @@
                         <p>Charge 10% VAT</p>
                     </div>
                     <div class="right">
-                        <p>$50</p>
+                        <p>$<span id="tax-amount">25</span></p>
                     </div>
                 </div>
                 <hr>
@@ -91,7 +95,7 @@
                         <h4>Total</h4>
                     </div>
                     <div class="right">
-                        <p>$550</p>
+                        <p>$<span id="grand-total">275</span></p>
                     </div>
                 </div>
             </div>
@@ -105,7 +109,78 @@
     </section>
 
     <script>
+        // event handler of phone & case //
+         document.getElementById("business-plus").addEventListener("click", function(){ 
+            handleTicket("business", true); 
+         })
 
+         document.getElementById("business-minus").addEventListener("click", function(){
+            handleTicket("business", false);  
+         })
+
+         document.getElementById("economy-plus").addEventListener("click", function(){
+            handleTicket("economy", true);
+         })
+         document.getElementById("economy-minus").addEventListener("click", function(){
+            handleTicket("economy", false);
+         })
+
+         // shared function of both event handlers //
+            function handleTicket(ticket, isIncrease){
+               const ticketInput = document.getElementById(ticket + "-count");
+               const ticketCount = parseInt(ticketInput.value);
+               
+               let ticketNewCount = ticketCount;
+               if (isIncrease == true) {
+                  ticketNewCount = ticketCount + 1;
+               }
+               if (isIncrease == false && ticketCount > 0) {
+                  ticketNewCount = ticketCount - 1;
+               }
+               ticketInput.value = ticketNewCount;
+               
+               calculateTotal();
+            
+               //    let ticketTotal = 0;
+            //    if (ticket == "business") {
+            //       ticketTotal = ticketNewCount * 150;
+            //    }
+            //    if (ticket == "economy") {
+            //       ticketTotal = ticketNewCount * 100;
+            //    }
+            //    document.getElementById(ticket + "-price").innerText = ticketTotal;
+            
+            //      not used because the input is directly calculated at subtotals //
+            
+            }
+            
+         // function to calculate grand total //
+           function calculateTotal(){
+            const businessTicketInput = getInputValue("business");
+            const economyTicketInput = getInputValue("economy");
+
+            const totalPrice = (businessTicketInput * 150) + (economyTicketInput * 100);
+            document.getElementById("total-price").innerText = totalPrice;
+
+            // tax addition //
+            const tax = Math.round(totalPrice * 0.1); // 10% tax of total price //
+            document.getElementById("tax-amount").innerText = tax;
+
+            //grand total calculation//
+             const grandTotal = totalPrice + tax;
+             document.getElementById("grand-total").innerText = grandTotal;
+         }
+
+         // getting input value, then return = common function //
+         function getInputValue(ticket){
+            const ticketCount = document.getElementById(ticket + "-count");
+            const ticketInput = parseInt(ticketCount.value);
+            return ticketInput;
+         }
+        // Booking button event handler //
+         document.getElementById("booking-btn").addEventListener("click", function(){
+            alert("Booking Complete!");
+         })
     </script>
 </body>
 
